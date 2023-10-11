@@ -6,3 +6,5 @@ a real workload.
 # Third-party libraries
 
 * Loguru
+* libfmt
+* cxxopts
