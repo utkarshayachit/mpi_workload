@@ -1,3 +1,6 @@
 [submodule "tpl/loguru"]
 	path = tpl/loguru
 	url = https://github.com/emilk/loguru.git
+[submodule "tpl/cxxopts"]
+	path = tpl/cxxopts
+	url = https://github.com/jarro2783/cxxopts.git
