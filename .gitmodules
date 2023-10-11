@@ -4,3 +4,6 @@
 [submodule "tpl/cxxopts"]
 	path = tpl/cxxopts
 	url = https://github.com/jarro2783/cxxopts.git
+[submodule "tpl/fmt"]
+	path = tpl/fmt
+	url = https://github.com/fmtlib/fmt.git
