@@ -1,0 +1,3 @@
+[submodule "tpl/loguru"]
+	path = tpl/loguru
+	url = https://github.com/emilk/loguru.git
