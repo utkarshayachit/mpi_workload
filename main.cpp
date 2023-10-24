@@ -117,6 +117,14 @@ int main(int argc, char* argv[])
     return EXIT_SUCCESS;
   }
 
+  if (rank == 0)
+  {
+    fmt::print("num_ranks: {}\n", size);
+    fmt::print("buffer_size: {} KB\n", buffer_size / 1024);
+    fmt::print("num_threads: {}\n", num_threads);
+    fmt::print("interval: {} seconds\n", interval);
+  }
+
   std::vector<std::thread> threads;
   std::vector<MPI_Comm> comms;
   for (int cc = 0; cc < num_threads; cc++)
@@ -140,7 +148,6 @@ int main(int argc, char* argv[])
   }
 
   MPI_Barrier(MPI_COMM_WORLD);
-
   MPI_Finalize();
   return EXIT_SUCCESS;
 }
