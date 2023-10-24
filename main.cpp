@@ -38,9 +38,10 @@ void thread_func(const int rank, const int thread_id, const int num_ranks, const
     }
 
     // send to all other ranks
-    std::vector<int> recv_buffer(num_ints * num_ranks, rank);
+    std::vector<int> send_buffer(num_ints * num_ranks, rank);
+    std::vector<int> recv_buffer(num_ints * num_ranks, -1);
     const auto status =
-      MPI_Alltoall(MPI_IN_PLACE, 0, 0, recv_buffer.data(), num_ints, MPI_INT, comm);
+      MPI_Alltoall(send_buffer.data(), num_ints, MPI_INT, recv_buffer.data(), num_ints, MPI_INT, comm);
     if (status != MPI_SUCCESS)
     {
       LOG_F(ERROR, "MPI_Alltoall failed with status %d", status);
@@ -57,6 +58,7 @@ void thread_func(const int rank, const int thread_id, const int num_ranks, const
       {
         last_progress_time = end_time;
         fmt::print(".");
+        std::fflush(stdout);
       }
     }
   }
