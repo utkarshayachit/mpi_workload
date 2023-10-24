@@ -14,10 +14,13 @@ used to build the project:
 cd mpi-workload
 
 # create a build directory and generate the build files
-cmake -b build
+cmake -B build
 
 # build the project
 cmake --build build
+
+# install the project
+cmake --install build --prefix <install_dir>
 ```
 
 ## Usage

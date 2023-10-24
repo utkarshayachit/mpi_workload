@@ -6,6 +6,8 @@ find_package(MPI REQUIRED COMPONENTS C)
 # handle tpls
 add_subdirectory(tpl/loguru)
 add_subdirectory(tpl/cxxopts)
+
+set(FMT_INSTALL OFF)
 add_subdirectory(tpl/fmt)
 add_executable(mpi_workload main.cpp)
 target_link_libraries(mpi_workload
@@ -14,3 +16,8 @@ target_link_libraries(mpi_workload
     loguru
     cxxopts
     fmt::fmt)
+
+install(TARGETS mpi_workload
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib/static)
