@@ -4,11 +4,14 @@ project(mpi_workload LANGUAGES C CXX)
 find_package(MPI REQUIRED COMPONENTS C)
 
 # handle tpls
+set(LOGURU_STACKTRACES OFF)
 add_subdirectory(tpl/loguru)
+
 add_subdirectory(tpl/cxxopts)
 
 set(FMT_INSTALL OFF)
 add_subdirectory(tpl/fmt)
+
 add_executable(mpi_workload main.cpp)
 target_link_libraries(mpi_workload
  PRIVATE
