@@ -31,14 +31,14 @@ cd build
 # supported options
 ./mpi-workload --help
 # >output
-MPI Workload
+Synthetic MPI Workload / Benchmark
 Usage:
   mpi_workload [OPTION...]
 
   -h, --help          Print help
   -t, --threads arg   Number of threads to spawn on each rank (default: 1)
   -b, --buffer arg    Buffer size in KBs (default: 1)
-  -i, --interval arg  Interval in seconds (default: 10)
+  -d, --duration arg  Test duration in seconds (default: 10)
 ```
 
 Currently only `MPI_Alltoall` based workload is supported. This may be extended
