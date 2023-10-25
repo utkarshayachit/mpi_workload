@@ -32,7 +32,9 @@ void thread_func(const int rank, const int thread_id, const int num_ranks, const
     const auto end_time = std::chrono::system_clock::now();
     const auto elapsed_time =
       std::chrono::duration_cast<std::chrono::seconds>(end_time - start_time);
-    if (elapsed_time.count() > interval)
+    int done = (rank == 0 && elapsed_time.count() > interval) ? 1 : 0;
+    MPI_Bcast(&done, 1, MPI_INT, 0, comm);
+    if (done == 1)
     {
       break;
     }
@@ -49,7 +51,6 @@ void thread_func(const int rank, const int thread_id, const int num_ranks, const
     }
 
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
     if (rank == 0 && thread_id == 0)
     {
       const auto progress_elapsed_time =
@@ -62,6 +63,7 @@ void thread_func(const int rank, const int thread_id, const int num_ranks, const
       }
     }
   }
+
   fmt::print("\n");
   LOG_F(1, "Thread %d:%d finished", rank, thread_id);
   MPI_Barrier(comm);
