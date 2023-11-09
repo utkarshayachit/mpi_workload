@@ -15,6 +15,20 @@
 
 namespace
 {
+
+void call_safe(int mpi_status)
+{
+  if (mpi_status != MPI_SUCCESS)
+  {
+    char error_string[MPI_MAX_ERROR_STRING];
+    int length_of_error_string;
+    MPI_Error_string(mpi_status, error_string, &length_of_error_string);
+    LOG_F(ERROR, "MPI error: %s", error_string);
+    MPI_Abort(MPI_COMM_WORLD, EXIT_FAILURE);
+    abort();
+  }
+}
+
 void thread_func(const int rank, const int thread_id, const int num_ranks, const int num_threads,
   const size_t buffer_size, const int interval, MPI_Comm comm)
 {
@@ -51,7 +65,7 @@ void thread_func(const int rank, const int thread_id, const int num_ranks, const
     const auto elapsed_time =
       std::chrono::duration_cast<std::chrono::seconds>(end_time - start_time);
     int done = (rank == 0 && elapsed_time.count() > interval) ? 1 : 0;
-    MPI_Bcast(&done, 1, MPI_INT, 0, comm);
+    call_safe(MPI_Bcast(&done, 1, MPI_INT, 0, comm));
     if (done == 1)
     {
       break;
@@ -70,13 +84,9 @@ void thread_func(const int rank, const int thread_id, const int num_ranks, const
     t_max = std::max(t_max, t_end - t_start);
     ++count;
 
-    if (status != MPI_SUCCESS)
-    {
-      LOG_F(ERROR, "MPI_Alltoall failed with status %d", status);
-      break;
-    }
+    call_safe(status);
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
     if (rank == 0 && thread_id == 0)
     {
       const auto progress_elapsed_time =
@@ -99,7 +109,7 @@ void thread_func(const int rank, const int thread_id, const int num_ranks, const
   }
   print_summary();
 
-  MPI_Barrier(comm);
+  call_safe(MPI_Barrier(comm));
   LOG_F(1, "Thread %d:%d finished", rank, thread_id);
 }
 
@@ -217,11 +227,11 @@ int main(int argc, char* argv[])
   {
     thread.join();
   }
-  MPI_Barrier(MPI_COMM_WORLD);
+  call_safe(MPI_Barrier(MPI_COMM_WORLD));
 
   for (auto& comm : comms)
   {
-    MPI_Comm_free(&comm);
+    call_safe(MPI_Comm_free(&comm));
   }
 
   MPI_Finalize();
